@@ -1,5 +1,6 @@
 package com.example.myapplication3.di.component
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
@@ -7,8 +8,9 @@ import javax.inject.Provider
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelProviderFactory @Inject constructor(
-    var creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
-) : ViewModelProvider.AndroidViewModelFactory() {
+    var creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>> ,
+    private val application : Application
+) : ViewModelProvider.AndroidViewModelFactory(application) {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val creator = creators[modelClass] ?: creators.entries.firstOrNull {
             modelClass.isAssignableFrom(it.key)
