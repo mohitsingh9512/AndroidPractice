@@ -3,8 +3,9 @@ package com.example.myapplication3.usecase
 import com.example.myapplication3.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class EmployeesUseCase {
+class EmployeesUseCase @Inject constructor() {
 
     suspend fun getData() : MainResult {
         return withContext(Dispatchers.IO){

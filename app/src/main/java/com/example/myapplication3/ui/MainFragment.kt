@@ -11,9 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication3.R
 import com.example.myapplication3.adapter.MainAdapter
 import com.example.myapplication3.data.MainResult
+import com.example.myapplication3.di.component.DaggerAppComponent
+import com.example.myapplication3.di.component.ViewModelProviderFactory
 import com.example.myapplication3.viewmodel.MainViewModel
+import javax.inject.Inject
 
 class MainFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
     private var mainViewModel : MainViewModel? = null
     private var recyclerView : RecyclerView? = null
@@ -21,7 +27,7 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        inject()
     }
 
     override fun onCreateView(
@@ -34,6 +40,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainViewModel = ViewModelProvider(viewModelStore,viewModelProviderFactory)[MainViewModel::class.java]
         setUpViews(view)
         setUpAdapter()
         setUpObserver()
@@ -73,6 +80,14 @@ class MainFragment : Fragment() {
     companion object {
         fun getInstance() : MainFragment {
             return MainFragment()
+        }
+    }
+
+    fun inject() {
+        activity?.application?.let { application ->
+            DaggerAppComponent.builder()
+                .baseAppComponent((application as MyApplication).getBaseComponent())
+                .build().inject(this)
         }
     }
 }
