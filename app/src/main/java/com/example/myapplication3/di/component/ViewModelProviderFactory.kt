@@ -9,7 +9,7 @@ import javax.inject.Provider
 @Suppress("UNCHECKED_CAST")
 class ViewModelProviderFactory @Inject constructor(
     var creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>> ,
-    private val application : Application
+    application : Application
 ) : ViewModelProvider.AndroidViewModelFactory(application) {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val creator = creators[modelClass] ?: creators.entries.firstOrNull {
