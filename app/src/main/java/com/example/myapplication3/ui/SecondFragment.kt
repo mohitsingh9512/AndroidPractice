@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -22,13 +21,11 @@ import com.example.myapplication3.di.component.DaggerAppComponent
 import com.example.myapplication3.di.component.ViewModelProviderFactory
 import com.example.myapplication3.extensions.log
 import com.example.myapplication3.viewmodel.MainViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MainFragment : Fragment() {
+class SecondFragment : Fragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProviderFactory
@@ -56,6 +53,12 @@ class MainFragment : Fragment() {
         setUpViews(view)
         setUpAdapter()
         setUpObserver()
+        //getData()
+
+        lifecycleScope.launchWhenStarted {
+            delay(3000)
+            //startActivity(Intent(context, DetailActivity::class.java))
+        }
     }
 
     private fun setUpViews(view: View) {
@@ -71,6 +74,21 @@ class MainFragment : Fragment() {
     }
 
     private fun setUpObserver() {
+        mainViewModel?.employeesList?.observe(viewLifecycleOwner) {
+            when(it){
+                is MainResult.Success -> {
+                    successResult(it)
+                }
+                is MainResult.Fail -> {
+                    failResult()
+                }
+
+                is MainResult.Loading -> {
+                    showLoader()
+                }
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 mainViewModel?.employeeListFlow?.collect {
@@ -87,6 +105,7 @@ class MainFragment : Fragment() {
                     }
                 }
             }
+
         }
     }
 
@@ -104,8 +123,8 @@ class MainFragment : Fragment() {
     }
 
     companion object {
-        fun getInstance() : MainFragment {
-            return MainFragment()
+        fun getInstance() : SecondFragment {
+            return SecondFragment()
         }
     }
 
@@ -119,6 +138,6 @@ class MainFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        log("Main Fragment, onPause")
+        log("Second Fragment, onPause")
     }
 }
