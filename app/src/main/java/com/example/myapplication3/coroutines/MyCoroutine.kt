@@ -122,8 +122,10 @@ class MyCoroutine {
      */
      fun cooperative(scope: CoroutineScope){
         scope.launch {
+            getAllInfo { }
             val startTime = System.currentTimeMillis()
             val job = launch(Dispatchers.Default) {
+                getAllInfo { }
                 var nextPrintTime = startTime
                 var i = 0
                 while(i<5 && isActive){ // isActive Makes it cooperative
