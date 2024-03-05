@@ -11,7 +11,7 @@ fun Activity.log(msg: String) {
 }
 
 fun Fragment.log(msg: String) {
-    Log.d("My LifeCycle", msg)
+    Log.d("My LifeCycle", "Fragment $this : $msg")
 
 }
 

@@ -9,6 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
@@ -19,12 +20,15 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import retrofit2.Call
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /*
 Coroutines in Kotlin are a language feature that allow you to write asynchronous code
 in a sequential manner. They provide a way to perform asynchronous operations without
-blocking the thread, making it easier to write concurrent and asynchronous code
+blocking the thread, making it easier to write concurrent and asynchronous code.
+Provides Structured Concurrency
+Cancellation and error handling
  */
 class MyCoroutine {
 
@@ -71,6 +75,7 @@ class MyCoroutine {
 
     /*
         start   complete      finish
+                  -> Cancelling ->
     New -> Active -> Completing ->  Complete
     isActive true/Active when completing state
     Completing state until children complete/finish
@@ -115,31 +120,48 @@ class MyCoroutine {
 
         // A cancel children job does not affect siblings
 
+        // You cannot start a cr from a cancelled scope.
+
     }
 
     /*
     Print message twice  a second
      */
      fun cooperative(scope: CoroutineScope){
-        scope.launch {
+        scope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.d("Coroutine","CEH 1 $throwable")
+        }) {
             getAllInfo { }
             val startTime = System.currentTimeMillis()
-            val job = launch(Dispatchers.Default) {
+            val job = launch(Dispatchers.Default + CoroutineExceptionHandler { coroutineContext, throwable ->
+                Log.d("Coroutine","CEH 2 $throwable")
+            }) {
                 getAllInfo { }
                 var nextPrintTime = startTime
                 var i = 0
                 while(i<5 && isActive){ // isActive Makes it cooperative
                     // or use yield() checks for cancellation and throws Exception
                     // ensureActive() as well
-                    if(System.currentTimeMillis() >= nextPrintTime){
-                        Log.d("Coroutine","Hello ${i++}")
-                        nextPrintTime += 500L
+                    try {
+                        if (System.currentTimeMillis() >= nextPrintTime) {
+                            Log.d("Coroutine", "Hello ${i++}")
+                            nextPrintTime += 500L
+                        }
+                    }catch (e: Exception){
+                        Log.d("Coroutine","catch $e")
+                    } finally {
+                        Log.d("Coroutine","coroutine finally")
                     }
                 }
             }
             delay(1000)
             Log.d("Coroutine","Cancel")
-            job.cancel()
+            try {
+                job.cancel()
+            }catch (e: Exception){
+                Log.d("Coroutine","catch $e")
+            }
+
             Log.d("Coroutine","Done")
             /* No Cooperative : Hello 1 Hello 2 Cancel Done Hello 3 Hello 4
             Cooperative : Hello 1 Hello 2 Cancel Done
@@ -187,7 +209,7 @@ class MyCoroutine {
     }
 
     /*
-        // join() Blocks the running makes its above code finish,
+        // join() Blocks the running makes it's above code finish,
         // await() returns the result, will throw exception if called after completed
         job.cancel()
         val result = job.await()  -> JobCancellationException
@@ -212,6 +234,8 @@ class MyCoroutine {
     they don't propagate the exception nor cancel siblings
      */
 
+    //TODO READ MORE , EXAMPLE
+
     /*
     // Supervisor Job : If one child cancels,
      it will notify it parent job and job will
@@ -224,19 +248,23 @@ class MyCoroutine {
 
     fun cancelJobAndChildren() {
         val job = scopeParent.launch() {
-            val job2 = launch() {
-                delay(2000)
-                log("job2")
-            }
-            val job3 = launch {
-                delay(2000)
-                log("job3")
-            }
-            delay(3000)
-            log("completed")
+           val job1 = launch {
+               val job2 = launch() {
+                   delay(2000)
+                   log("job2")
+               }
+               val job3 = launch {
+                   delay(4000)
+                   log("job3")
+               }
+               delay(3000)
+               log("completed")
+           }
+            delay(2500)
+            job1.cancel()
+            log("job1 started")
         }
-        job.cancel()
-        log("job1 started")
+
     }
 
     fun failJobAndChildren() {

@@ -1,6 +1,5 @@
 package com.example.myapplication3.di.module
 
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication3.di.component.ViewModelProviderFactory
@@ -21,3 +20,5 @@ abstract class ViewModelModule {
     @ViewModelKey(MainViewModel::class)
     abstract fun providesMainViewModel(mainViewModel: MainViewModel) : ViewModel
 }
+
+

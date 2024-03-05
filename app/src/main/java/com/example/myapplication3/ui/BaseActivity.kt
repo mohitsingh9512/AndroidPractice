@@ -21,7 +21,7 @@ open class BaseActivity : AppCompatActivity() {
                     context: Context
                 ) {
                     super.onFragmentPreAttached(fm, f, context)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentAttached(
@@ -30,7 +30,7 @@ open class BaseActivity : AppCompatActivity() {
                     context: Context
                 ) {
                     super.onFragmentAttached(fm, f, context)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentPreCreated(
@@ -39,7 +39,7 @@ open class BaseActivity : AppCompatActivity() {
                     savedInstanceState: Bundle?
                 ) {
                     super.onFragmentPreCreated(fm, f, savedInstanceState)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentCreated(
@@ -48,7 +48,7 @@ open class BaseActivity : AppCompatActivity() {
                     savedInstanceState: Bundle?
                 ) {
                     super.onFragmentCreated(fm, f, savedInstanceState)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentActivityCreated(
@@ -57,7 +57,7 @@ open class BaseActivity : AppCompatActivity() {
                     savedInstanceState: Bundle?
                 ) {
                     super.onFragmentActivityCreated(fm, f, savedInstanceState)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentViewCreated(
@@ -67,27 +67,27 @@ open class BaseActivity : AppCompatActivity() {
                     savedInstanceState: Bundle?
                 ) {
                     super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
                     super.onFragmentStarted(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentResumed(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
                     super.onFragmentPaused(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
                     super.onFragmentStopped(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentSaveInstanceState(
@@ -96,22 +96,22 @@ open class BaseActivity : AppCompatActivity() {
                     outState: Bundle
                 ) {
                     super.onFragmentSaveInstanceState(fm, f, outState)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentViewDestroyed(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentDestroyed(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
 
                 override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
                     super.onFragmentDetached(fm, f)
-                    log(object {}.javaClass.enclosingMethod?.name ?: "")
+                    f.log(object {}.javaClass.enclosingMethod?.name ?: "")
                 }
             }, false)
         }

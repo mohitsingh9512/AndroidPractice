@@ -1,11 +1,11 @@
 package com.example.myapplication3.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -21,11 +21,9 @@ import com.example.myapplication3.data.MainResult
 import com.example.myapplication3.di.component.DaggerAppComponent
 import com.example.myapplication3.di.component.ViewModelProviderFactory
 import com.example.myapplication3.extensions.log
+import com.example.myapplication3.ui.dialog.MyDialogFragment
 import com.example.myapplication3.viewmodel.MainViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -54,8 +52,13 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(viewModelStore,viewModelProviderFactory)[MainViewModel::class.java]
         setUpViews(view)
-        setUpAdapter()
-        setUpObserver()
+        //setUpAdapter()
+        //setUpObserver()
+
+        //startActivity(Intent(activity, DetailActivity::class.java))
+        fragmentManager?.let {
+            MyDialogFragment().show(it,"")
+        }
     }
 
     private fun setUpViews(view: View) {

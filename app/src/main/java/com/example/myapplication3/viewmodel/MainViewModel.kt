@@ -14,7 +14,7 @@ import javax.annotation.concurrent.ThreadSafe
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class MainViewModel @Inject constructor(private val employeesUseCase: EmployeesUseCase) : ViewModel() , CoroutineScope{
+class MainViewModel @Inject constructor(private val employeesUseCase: EmployeesUseCase) : ViewModel(), CoroutineScope{
 
     private val _employeeList = MutableLiveData<MainResult>()
     val employeesList : LiveData<MainResult> = _employeeList
@@ -67,5 +67,4 @@ class MainViewModel @Inject constructor(private val employeesUseCase: EmployeesU
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
-
 }
