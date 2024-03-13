@@ -11,12 +11,15 @@ class EmployeesUseCase @Inject constructor() {
     suspend fun getData() : MainResult {
         return withContext(Dispatchers.IO){
             if(true) {
-                val depts = arrayListOf(EmployeesResponse.Employees.Dept(20,"Dept1"), EmployeesResponse.Employees.Dept(20,"Dept2"))
-                val employee1 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
-                val employee2 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
-                val employee3 = EmployeesResponse.Employees(dept = null , "1", "Rohit", "0" , "P")
-                val employee4 = EmployeesResponse.Employees(dept = null , "1", "Mohit", "0" , "P")
-                val arrayList = arrayListOf(employee1, employee2, employee3,employee4)
+//                val depts = arrayListOf(EmployeesResponse.Employees.Dept(20,"Dept1"), EmployeesResponse.Employees.Dept(20,"Dept2"))
+//                val employee1 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
+//                val employee2 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
+//                val employee3 = EmployeesResponse.Employees(dept = null , "1", "Rohit", "0" , "P")
+//                val employee4 = EmployeesResponse.Employees(dept = null , "1", "Mohit", "0" , "P")
+                val arrayList = arrayListOf<EmployeesResponse.Employees>()
+                for(i in 1..100){
+                    arrayList.add(EmployeesResponse.Employees(dept = null , "1", "$i", "0" , "P"))
+                }
 
                 return@withContext MainResult.Success(processResult(arrayList))
             }else {
@@ -32,7 +35,12 @@ class EmployeesUseCase @Inject constructor() {
             val employee2 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
             val employee3 = EmployeesResponse.Employees(dept = null , "1", "Rohit", "0" , "P")
             val employee4 = EmployeesResponse.Employees(dept = null , "1", "Mohit", "0" , "P")
-           emit(arrayListOf(employee1, employee2, employee3,employee4))
+
+            val arrayList = arrayListOf<EmployeesResponse.Employees>()
+            for(i in 0..100){
+                arrayList.add(EmployeesResponse.Employees(dept = null , "1", "$i", "0" , "P"))
+            }
+            emit(arrayList)
         }.map {
             MainResult.Success(processResult(it))
         }

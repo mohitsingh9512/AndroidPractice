@@ -44,10 +44,6 @@ class BaseRetrofitModule {
         return OkHttpClient.Builder()
             .build()
     }
-
-    companion object {
-
-    }
 }
 
 @Qualifier

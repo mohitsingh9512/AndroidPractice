@@ -7,6 +7,7 @@ import com.example.myapplication3.di.scope.ApplicationScope
 import dagger.Component
 import retrofit2.Retrofit
 import javax.inject.Named
+import javax.inject.Singleton
 
 @ApplicationScope
 @Component(modules = [BaseAppModule::class])

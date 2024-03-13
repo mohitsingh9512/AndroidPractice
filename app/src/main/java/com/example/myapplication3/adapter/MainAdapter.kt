@@ -1,5 +1,6 @@
 package com.example.myapplication3.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ class MainAdapter : RecyclerView.Adapter<AbstractViewHolder<*>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view  = createViewItem(parent,viewType)
+        Log.d("Recycler", "OnCreate $viewType")
         return when(viewType) {
             EmployeeViewHolder.LAYOUT -> EmployeeViewHolder(view)
             ContainerViewHolder.LAYOUT -> ContainerViewHolder(view)
@@ -41,6 +43,7 @@ class MainAdapter : RecyclerView.Adapter<AbstractViewHolder<*>>() {
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        Log.d("Recycler", "On Bind $position")
         bind(holder as AbstractViewHolder<BaseDataModel> , position)
     }
 
@@ -55,5 +58,15 @@ class MainAdapter : RecyclerView.Adapter<AbstractViewHolder<*>>() {
             is DepartmentDataModel -> DepartmentViewHolder.LAYOUT
             else -> DepartmentViewHolder.LAYOUT
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        Log.d("Recycler", "onAttachedToRecyclerView")
+        super.onAttachedToRecyclerView(recyclerView)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        Log.d("Recycler", "onDetachedFromRecyclerView")
+        super.onDetachedFromRecyclerView(recyclerView)
     }
 }

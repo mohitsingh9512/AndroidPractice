@@ -1,8 +1,9 @@
 package com.example.myapplication3
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.Arrays
 
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -15,3 +16,5 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 }
+
+

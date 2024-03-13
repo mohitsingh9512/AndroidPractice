@@ -4,7 +4,6 @@ import com.example.myapplication3.network.ApiInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import javax.inject.Named
 
 @Module
 class AppRetrofitModule {

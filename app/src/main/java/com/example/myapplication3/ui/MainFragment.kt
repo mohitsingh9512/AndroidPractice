@@ -3,6 +3,7 @@ package com.example.myapplication3.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,14 @@ import com.example.myapplication3.di.component.ViewModelProviderFactory
 import com.example.myapplication3.extensions.log
 import com.example.myapplication3.ui.dialog.MyDialogFragment
 import com.example.myapplication3.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -52,13 +60,10 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(viewModelStore,viewModelProviderFactory)[MainViewModel::class.java]
         setUpViews(view)
-        //setUpAdapter()
-        //setUpObserver()
-
+        setUpAdapter()
+        setUpObserver()
+        lifecycleScope.launch(Dispatchers.Default) {  }
         //startActivity(Intent(activity, DetailActivity::class.java))
-        fragmentManager?.let {
-            MyDialogFragment().show(it,"")
-        }
     }
 
     private fun setUpViews(view: View) {
@@ -76,7 +81,7 @@ class MainFragment : Fragment() {
     private fun setUpObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                mainViewModel?.employeeListFlow?.collect {
+                mainViewModel?.employeeListFlow?.collectLatest {
                     when(it) {
                         is MainResult.Loading -> {
                             showLoader()
@@ -89,6 +94,8 @@ class MainFragment : Fragment() {
                         }
                     }
                 }
+
+                Toast.makeText(context, "Hello", Toast.LENGTH_SHORT).show()
             }
         }
     }
