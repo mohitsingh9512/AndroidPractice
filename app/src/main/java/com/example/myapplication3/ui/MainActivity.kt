@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.myapplication3.coroutines.MyCoroutine
 import com.example.myapplication3.extensions.log
 import com.example.myapplication3.ui.dialog.MyDialogFragment
+import com.example.myapplication3.workManager.ImageUploadWorker
 import com.example.myapplication3.workManager.enqueueProcessImageAndUpload
 
 
@@ -23,16 +24,17 @@ class MainActivity : BaseActivity() {
 
             // lifeCycleTransparent()
 
-            supportFragmentManager
-            .beginTransaction()
-            .replace(com.example.myapplication3.R.id.content_frame, MainFragment.getInstance())
-            .commit()
+//            supportFragmentManager
+//            .beginTransaction()
+//            .replace(com.example.myapplication3.R.id.content_frame, MainFragment.getInstance())
+//            .commit()
 
             // Work Manager
-            //workManager()
+            workManager()
 
             // Coroutine
             //coroutine()
+
         }
     }
 
@@ -40,6 +42,12 @@ class MainActivity : BaseActivity() {
         // Work Manager
         //startWorkerOneTime()
         //startWorkerChaining()
+        uploadImageForeground()
+    }
+
+    private fun uploadImageForeground(){
+        ImageUploadWorker.View().startWork(this)
+        ImageUploadWorker.View().observer(this, this)
     }
 
     private fun startWorkerOneTime() {
