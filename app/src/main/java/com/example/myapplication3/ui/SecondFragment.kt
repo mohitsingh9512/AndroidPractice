@@ -88,25 +88,6 @@ class SecondFragment : Fragment() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                mainViewModel?.employeeListFlow?.collect {
-                    when(it) {
-                        is MainResult.Loading -> {
-                            showLoader()
-                        }
-                        is MainResult.Success -> {
-                            successResult(it)
-                        }
-                        is MainResult.Fail -> {
-                            failResult()
-                        }
-                    }
-                }
-            }
-
-        }
     }
 
     private fun showLoader() {

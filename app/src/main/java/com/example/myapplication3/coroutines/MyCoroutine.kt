@@ -225,7 +225,6 @@ class MyCoroutine {
             // isActive() -> no Job to use this
             // yield() -> No Cr Context to use this
         }
-
     }
 
     /*
@@ -264,7 +263,6 @@ class MyCoroutine {
             job1.cancel()
             log("job1 started")
         }
-
     }
 
     fun failJobAndChildren() {
@@ -333,6 +331,19 @@ class MyCoroutine {
         }
 
         scopeParent.launch {
+            val result = runCatching {
+                throw java.lang.Exception("Crash from async : No supervisor")
+            }
+            if(result.isSuccess){
+                // Happy Path
+            }else {
+                // Sad Path
+            }
+        }
+    }
+
+    fun asyncExampleWithSuperVisorScope() {
+        scopeParent.launch {
             supervisorScope {
                 val deferred = async {
                     throw java.lang.Exception("Crash from async")
@@ -345,7 +356,9 @@ class MyCoroutine {
             }
         }
 
+    }
 
+    fun asyncExampleWithoutSupervisor() {
         scopeParent.launch {
             val deferred = async {
                 throw java.lang.Exception("Crash from async : No supervisor")
@@ -356,15 +369,19 @@ class MyCoroutine {
                 log("No exception thrown from async : No supervisor")
             }
         }
+    }
 
-        scopeParent.launch {
-            val result = runCatching {
+    fun asyncExampleWithoutSupervisorButCEH() {
+        scopeParent.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+            log("Saved by CEH")
+        }) {
+            val deferred = async {
                 throw java.lang.Exception("Crash from async : No supervisor")
             }
-            if(result.isSuccess){
-                // Happy Path
-            }else {
-                // Sad Path
+            try {
+                deferred.await()
+            }catch (e:Exception){
+                log("No exception thrown from async : No supervisor")
             }
         }
     }
@@ -401,7 +418,7 @@ class MyCoroutine {
         val scope3 = CoroutineScope(Job())
         scope3.launch() {
             launch(handler) {
-                throw java.lang.Exception("Failed Cr")
+                //throw java.lang.Exception("Failed Cr")
                 // Will CRASH .
             }
         }
@@ -416,6 +433,165 @@ class MyCoroutine {
                }
            }
         }
+    }
+
+    fun cehExampleAsync() {
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            log(throwable.message ?: "")
+        }
+
+
+        val scope0 = CoroutineScope(Job())
+
+
+        /*
+        scope0.async {
+            throw java.lang.Exception("Failed Cr without await")
+            // No await called. The exception will be thrown but not processed
+            // But scope will be cancelled
+            // will not crash
+        }
+        log("$scope0")
+
+
+        scope0.launch {
+            async {
+                throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+            }
+            // No await called. the exception will be thrown and wont be processed
+            // but since it will also propagate it will go to launch and launch will error
+            // will crash
+        }
+        log("$scope0")
+
+
+
+        scope0.launch(handler) {
+            async() {
+                throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+            }
+            // No await called. the exception will be thrown and wont be processed
+            // but since it will also propagate it will go to launch and launch will error
+            // handler will be called
+        }
+        log("$scope0")
+
+
+
+
+
+        scope0.launch() {
+           supervisorScope {
+               val d = async() {
+                   throw java.lang.Exception("Failed Cr without await inside root cr")
+               }
+               // With await example below . till now we were not calling await
+           }
+            // another way to save using supervisorScope
+            // No await called. the exception will be thrown and wont be processed
+            // but since it will also propagate it will go to launch and launch will error
+            // scope0 not cancelled
+        }
+        log("$scope0")
+
+        scope0.launch(handler) {
+            val d = async() { // placing handler here wont work
+                throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+            }
+            d.await()
+            // await called. the exception will be thrown and will be processed
+            // but since it will also propagate it will go to launch and launch will error
+            // handler will be called
+            // scope will be cancelled
+        }
+        log("$scope0")
+
+        scope0.launch() {
+            supervisorScope {
+                val d = async() { // placing handler here wont work
+                    throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+                }
+                d.await()
+            }
+            // await called. the exception will be thrown and will be processed
+            // supervisor will propagate the exception
+            // but since it will also propagate it will go to launch and launch will error
+            // Will CRASH
+            // scope cancelled
+        }
+        log("$scope0")
+
+
+        scope0.launch() {
+
+            val d = async() { // placing handler here wont work
+                throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+            }
+            try {
+                d.await()
+            }catch (e : Exception){
+                log("Log from Catch")
+            }
+            // await called. the exception will be thrown and will be processed
+            // but since it will also propagate it will go to launch and launch will error
+            // Will CRASH, catch will be called
+        }
+        log("$scope0")
+
+
+        scope0.launch() {
+
+            supervisorScope {
+                val d = async() { // placing handler here wont work
+                    throw java.lang.Exception("Failed Cr without await inside root cr") // sent to handler safe
+                }
+                try {
+                    d.await()
+                }catch (e : Exception){
+                    log("Log from Catch")
+                }
+            }
+            // await called. the exception will be thrown and will be processed
+            // supervisor will propagate the exception
+            // but since it will also propagate it will go to launch and launch will error
+            // Will NOT CRASH, catch will be called
+        }
+        log("$scope0")
+
+        */
+
+
+        /*
+
+        // Passed Inside inner launch
+        val scope2 = CoroutineScope(Job())
+        scope2.launch(handler) {
+            launch {
+                throw java.lang.Exception("Failed Cr") // sent to handler safe
+            }
+        }
+
+        // Passed Inside inner inner launch -> will crash
+        val scope3 = CoroutineScope(Job())
+        scope3.launch() {
+            launch(handler) {
+                //throw java.lang.Exception("Failed Cr")
+                // Will CRASH .
+            }
+        }
+
+        // Passed Inside inner inner launch but supervisor-> safe
+        val scope4 = CoroutineScope(Job())
+        scope4.launch() {
+            supervisorScope {
+                launch(handler) {
+                    throw java.lang.Exception("Failed Cr")
+                    // No Crash .
+                }
+            }
+        }
+
+         */
     }
 
     fun log(msg : String){

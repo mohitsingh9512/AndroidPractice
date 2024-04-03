@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(private val employeesUseCase: EmployeesU
     private val coroutineScope = CoroutineScope(coroutineContext)
 
     init {
-        getDataFlow()
+        getData()
     }
 
     private fun getData(){

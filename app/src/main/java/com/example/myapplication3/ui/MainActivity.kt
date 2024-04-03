@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication3.coroutines.MyCoroutine
 import com.example.myapplication3.extensions.log
@@ -30,11 +31,10 @@ class MainActivity : BaseActivity() {
 //            .commit()
 
             // Work Manager
-            workManager()
+            //workManager()
 
             // Coroutine
-            //coroutine()
-
+            coroutine()
         }
     }
 
@@ -70,6 +70,10 @@ class MainActivity : BaseActivity() {
         //ensureCancel()
         //jobCancelChildren()
         //failJobChildren()
+        //MyCoroutine().asyncExampleWithoutSupervisor()
+        //MyCoroutine().asyncExampleWithSuperVisorScope()
+        //MyCoroutine().cehExample()
+        MyCoroutine().cehExampleAsync()
     }
 
     private fun crLazy(){

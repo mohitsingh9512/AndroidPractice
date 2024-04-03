@@ -11,15 +11,17 @@ class EmployeesUseCase @Inject constructor() {
     suspend fun getData() : MainResult {
         return withContext(Dispatchers.IO){
             if(true) {
-//                val depts = arrayListOf(EmployeesResponse.Employees.Dept(20,"Dept1"), EmployeesResponse.Employees.Dept(20,"Dept2"))
-//                val employee1 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
-//                val employee2 = EmployeesResponse.Employees(dept = depts , "1", "Rohit", "0" , "P")
-//                val employee3 = EmployeesResponse.Employees(dept = null , "1", "Rohit", "0" , "P")
-//                val employee4 = EmployeesResponse.Employees(dept = null , "1", "Mohit", "0" , "P")
+                val depts = arrayListOf(EmployeesResponse.Employees.Dept(20,"Dept1"), EmployeesResponse.Employees.Dept(20,"Dept2"))
+                val employee1 = EmployeesResponse.Employees(dept = depts , "11", "Rohit", "0" , "P")
+                val employee2 = EmployeesResponse.Employees(dept = depts , "11", "Rohit", "0" , "P")
+                val employee3 = EmployeesResponse.Employees(dept = null , "10", "Mohit", "0" , "P")
                 val arrayList = arrayListOf<EmployeesResponse.Employees>()
-                for(i in 1..100){
-                    arrayList.add(EmployeesResponse.Employees(dept = null , "1", "$i", "0" , "P"))
-                }
+                arrayList.add(employee1)
+                arrayList.add(employee2)
+                arrayList.add(employee3)
+//                for(i in 1..100){
+//                    arrayList.add(EmployeesResponse.Employees(dept = null , "1", "$i", "0" , "P"))
+//                }
 
                 return@withContext MainResult.Success(processResult(arrayList))
             }else {

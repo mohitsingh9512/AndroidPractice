@@ -1,8 +1,6 @@
 package com.example.myapplication3.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,20 +20,23 @@ import com.example.myapplication3.data.MainResult
 import com.example.myapplication3.di.component.DaggerAppComponent
 import com.example.myapplication3.di.component.ViewModelProviderFactory
 import com.example.myapplication3.extensions.log
-import com.example.myapplication3.ui.dialog.MyDialogFragment
 import com.example.myapplication3.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
 
+    private val TAG = "TAGGGG"
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProviderFactory
 
@@ -56,13 +57,17 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    private val ceh = CoroutineExceptionHandler { coroutineContext, throwable ->
+        log(throwable.message.toString())
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(viewModelStore,viewModelProviderFactory)[MainViewModel::class.java]
         setUpViews(view)
         setUpAdapter()
         setUpObserver()
-        lifecycleScope.launch(Dispatchers.Default) {  }
         //startActivity(Intent(activity, DetailActivity::class.java))
     }
 
@@ -130,5 +135,95 @@ class MainFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         log("Main Fragment, onPause")
+    }
+
+    fun coroutineExample() {
+        lifecycleScope.launch {
+            launch {
+                api3()
+            }
+            coroutineScope {
+                launch {
+
+                    try {
+                        api1()
+
+                    }catch (e: Exception){
+                        log("$e")
+                    }
+
+                }
+
+                launch {
+                    api2()
+                }
+
+            }
+        }
+    }
+
+    suspend fun api1() {
+        delay(500)
+        throw Exception("")
+        log("1: Done")
+    }
+
+    suspend fun api2() {
+        delay(1000)
+        log("2: Done")
+    }
+
+    suspend fun api3() {
+        delay(1500)
+        log("3: Done")
+    }
+
+    private fun multipleDownloads() : List<String>{
+        val CRH = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.d(TAG, "$throwable Exception occured at $coroutineContext")
+        }
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CRH)
+        scope.launch(CRH) {
+            val parentScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CRH)
+            val a = parentScope.async { downloadTask1() }
+            val b = parentScope.async { downloadTask2() }
+            val c = parentScope.async { downloadTask3() }
+            val data = awaitAll(a, b, c)
+            data.forEach {
+                Log.d(TAG, "data ${it}")
+            }
+            //delay(3000)
+            Log.d(TAG, "parent launch")
+        }
+        return arrayListOf<String>()
+    }
+
+    private suspend fun downloadTask1(): String {
+        try {
+            delay(500)
+            erroroccured()
+            return "downloadTask1"
+        }catch (_: Exception){
+
+        }
+        return ""
+    }
+
+
+    private suspend fun downloadTask2(): String {
+        delay(1000)
+        Log.d(TAG, "downloadTask2")
+        return "downloadTask2"
+    }
+
+    private suspend fun downloadTask3(): String {
+        delay(2000)
+        Log.d(TAG, "downloadTask3")
+        return "downloadTask2"
+
+    }
+
+    private fun erroroccured() {
+        throw IndexOutOfBoundsException()
     }
 }
